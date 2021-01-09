@@ -58,6 +58,9 @@ zplug "modules/prompt", from:prezto
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
 zplug "zsh-users/zsh-completions"
 zplug "junegunn/fzf-bin", as:command, from:gh-r, rename-to:fzf
+zplug "BurntSushi/ripgrep", \
+    from:gh-r, \
+    as:command, rename-to:rg
 zplug "mattberther/zsh-pyenv"
 zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 
@@ -79,3 +82,6 @@ prompt powerlevel10k
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# for machine specific settings, if file exists, load
+[[ ! -f ~/.zshrc.zsh ]] || source ~/.zshrc.zsh
