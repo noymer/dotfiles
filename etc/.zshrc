@@ -61,6 +61,9 @@ zplug "junegunn/fzf-bin", as:command, from:gh-r, rename-to:fzf
 zplug "BurntSushi/ripgrep", \
     from:gh-r, \
     as:command, rename-to:rg
+zplug "stedolan/jq", \
+    from:gh-r, \
+    as:command
 zplug "mattberther/zsh-pyenv"
 zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 
