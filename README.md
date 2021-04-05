@@ -1,5 +1,5 @@
 # Installation
-curl -L https://raw.githubusercontent.com/noymer/dotfiles/master/bin/installer.sh | bash
+curl -L https://raw.githubusercontent.com/noymer/dotfiles/master/installer.sh | bash
 
 
 ## prerequisites
