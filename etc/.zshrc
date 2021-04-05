@@ -64,6 +64,9 @@ zplug "BurntSushi/ripgrep", \
 zplug "stedolan/jq", \
     from:gh-r, \
     as:command
+zplug "neovim/neovim", \
+    from:gh-r, \
+    as:command, rename-to:nvim
 zplug "mattberther/zsh-pyenv"
 zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 
@@ -85,6 +88,8 @@ prompt powerlevel10k
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+alias vim="nvim"
 
 # for machine specific settings, if file exists, load
 [[ ! -f ~/.zshrc.zsh ]] || source ~/.zshrc.zsh
