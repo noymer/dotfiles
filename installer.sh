@@ -35,19 +35,24 @@ function make-symbolic-link()
     if [ -L $TARGET_PATH ]; then
         unlink $TARGET_PATH
         ln -s $SOURCE_PATH $TARGET_PATH
+    elif [ -f $TARGET_PATH ]; then
+        # -b option not exist in BSD ln
+        # ln -sb $SOURCE_PATH $TARGET_PATH
+        mv $TARGET_PATH $TARGET_PATH.bak
+        ln -s $SOURCE_PATH $TARGET_PATH
     else
-        ln -sb $SOURCE_PATH $TARGET_PATH
+        ln -s $SOURCE_PATH $TARGET_PATH
     fi
 }
 
 ETC_DIR=$DOTFILES_ROOT/etc
 cd $ETC_DIR
 
-for d in $(find -type d); do 
+for d in $(find . -type d); do
     mkdir -p $HOME/$d
 done
 
-for f in $(find -type f); do
+for f in $(find . -type f); do
     make-symbolic-link $ETC_DIR/$f $HOME/$f
 done
 
