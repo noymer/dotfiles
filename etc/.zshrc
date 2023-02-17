@@ -80,10 +80,9 @@ fi
 
 zplug load --verbose
 
-if [[ ! -d ~/.poetry ]]; then
-	curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 - --no-modify-path
+if [[ ! -e ~/.local/bin/poetry ]]; then
+  curl -sSL https://install.python-poetry.org | python3 -
 fi
-export PATH="$HOME/.poetry/bin:$PATH"
 prompt powerlevel10k
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
