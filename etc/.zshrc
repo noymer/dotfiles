@@ -57,18 +57,19 @@ zplug "modules/git", from:prezto
 zplug "modules/prompt", from:prezto
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
 zplug "zsh-users/zsh-completions"
-zplug "junegunn/fzf-bin", as:command, from:gh-r, rename-to:fzf
+zplug "junegunn/fzf", as:command, from:gh-r
 zplug "BurntSushi/ripgrep", \
     from:gh-r, \
     as:command, rename-to:rg
-zplug "stedolan/jq", \
+zplug "jqlang/jq", \
     from:gh-r, \
-    as:command
+    as:command, \
+    rename-to:jq
 zplug "neovim/neovim", \
     from:gh-r, \
     as:command, rename-to:nvim
 zplug "mattberther/zsh-pyenv"
-zplug 'zplug/zplug', hook-build:'zplug --self-manage'
+zplug 'zplug/zplug', hook-build:'zplug --self-manage', frozen:1
 
 # Install plugins if there are plugins that have not been installed
 if ! zplug check --verbose; then
