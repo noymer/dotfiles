@@ -1,95 +1,91 @@
-# Set up the prompt
-
-autoload -Uz promptinit
-promptinit
-prompt adam1
-
-setopt histignorealldups sharehistory
-
-# Use emacs keybindings even if our EDITOR is set to vi
-bindkey -e
-
 export LANG=ja_JP.UTF-8
+
+## history
 # Keep 100000 lines of history within the shell and save it to ~/.zsh_history:
 HISTSIZE=100000
 SAVEHIST=100000
 HISTFILE=~/.zsh_history
+setopt histignorealldups
 setopt share_history
 
-# Use modern completion system
-autoload -Uz compinit
-compinit
+## zinit
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+[ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
+[ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+source "${ZINIT_HOME}/zinit.zsh"
 
-zstyle ':completion:*' auto-description 'specify: %d'
-zstyle ':completion:*' completer _expand _complete _correct _approximate
-zstyle ':completion:*' format 'Completing %d'
-zstyle ':completion:*' group-name ''
-zstyle ':completion:*' menu select=2
-eval "$(dircolors -b)"
-zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-zstyle ':completion:*' list-colors ''
-zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
-zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=* l:|=*'
-zstyle ':completion:*' menu select=long
-zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
-zstyle ':completion:*' use-compctl false
-zstyle ':completion:*' verbose true
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
 
-zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
-zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
+## zsh-history-substring-search
+# see: https://github.com/zsh-users/zsh-history-substring-search
+# なんかうまく動かない。。。
+# zinit snippet OMZ::plugins/git/git.plugin.zsh
+# zinit load 'zsh-users/zsh-history-substring-search'
+# zinit ice wait'1' atload'_history_substring_search_config'
+# 以下参考にすればよい？
+# https://github.com/zsh-users/zsh-history-substring-search/issues/110
 
-# for zplug
-# see:
-# https://qiita.com/b4b4r07/items/f37aadef0b3f740e8c14
-# https://sanoto-nittc.hatenablog.com/entry/2017/12/16/213735
+zinit light zdharma-continuum/history-search-multi-word
+zinit light zsh-users/zsh-autosuggestions
+zinit light zdharma-continuum/fast-syntax-highlighting
 
-# zplugが無ければgitからclone
-if [[ ! -d ~/.zplug ]];then
-  git clone https://github.com/zplug/zplug ~/.zplug
-fi
-source ~/.zplug/init.zsh
+## binaries
+zinit light zdharma-continuum/zinit-annex-bin-gem-node
+# from: https://github.com/zdharma-continuum/zinit/wiki/Recipes-for-popular-programs
+# jq
+zinit for \
+    from'gh-r' \
+    sbin'* -> jq' \
+    nocompile \
+  @jqlang/jq
 
-# zplug "zsh-users/zsh-history-substring-search"
-zplug "modules/history-substring-search", from:prezto
-# 以下はgit 2.11.0以上でないと使えない。。。
-# zplug "woefe/git-prompt.zsh"
-zplug "modules/git", from:prezto
-zplug "modules/prompt", from:prezto
-zplug "zsh-users/zsh-syntax-highlighting", defer:2
-zplug "zsh-users/zsh-completions"
-zplug "junegunn/fzf", as:command, from:gh-r
-zplug "BurntSushi/ripgrep", \
-    from:gh-r, \
-    as:command, rename-to:rg
-zplug "jqlang/jq", \
-    from:gh-r, \
-    as:command, \
-    rename-to:jq
-zplug "neovim/neovim", \
-    from:gh-r, \
-    as:command, rename-to:nvim
-zplug "mattberther/zsh-pyenv"
-zplug 'zplug/zplug', hook-build:'zplug --self-manage', frozen:1
+# ripgrep
+zinit for \
+    from'gh-r' \
+    sbin'**/rg -> rg' \
+  BurntSushi/ripgrep
 
-# Install plugins if there are plugins that have not been installed
-if ! zplug check --verbose; then
-    printf "Install? [y/N]: "
-    if read -q; then
-        echo; zplug install
-    fi
+# gh
+zinit for \
+    from'gh-r' \
+    sbin'**/gh' \
+  cli/cli
+# from: https://cli.github.com/manual/gh_completion
+eval "$(gh completion -s zsh)"
+
+
+## uv for python
+
+UV_PATH=${XDG_BIN_HOME:-${HOME}/.local/bin/uv}
+if [[ ! -f $UV_PATH ]]; then
+  mkdir -p "$(dirname $UV_PATH)"
+  curl -LsSf https://astral.sh/uv/install.sh | env INSTALLER_NO_MODIFY_PATH=1 sh
 fi
 
-zplug load --verbose
-
-if [[ ! -e ~/.local/bin/poetry ]]; then
-  curl -sSL https://install.python-poetry.org | python3 -
+## mise
+MISE_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/mise"
+if [[ ! -d $MISE_DIR ]]; then
+  curl https://mise.run | sh
 fi
-prompt powerlevel10k
 
+eval "$(mise activate zsh)"
+
+## prompt
+# Load powerlevel10k theme
+zinit ice depth"1" # git clone depth
+zinit light romkatv/powerlevel10k
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-alias vim="nvim"
+# 補完候補をカーソルで選択できるように
+# from: https://zenn.dev/ttskch/articles/fb5a700b37a504#%E8%A3%9C%E5%AE%8C%E5%80%99%E8%A3%9C%E3%82%92%E3%82%AB%E3%83%BC%E3%82%BD%E3%83%AB%E3%81%A7%E9%81%B8%E6%8A%9E%E3%81%A7%E3%81%8D%E3%82%8B%E3%82%88%E3%81%86%E3%81%AB
+autoload -U compinit
+compinit -i
+zstyle ':completion:*:default' menu select=1
+# 補完をcase-insensitiveに
+# from: https://zenn.dev/ttskch/articles/fb5a700b37a504#%E8%A3%9C%E5%AE%8C%E3%82%92case-insensitive%E3%81%AB
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
 # for machine specific settings, if file exists, load
 [[ ! -f ~/.zshrc.zsh ]] || source ~/.zshrc.zsh
