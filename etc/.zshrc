@@ -63,6 +63,14 @@ if [[ ! -f $UV_PATH ]]; then
   curl -LsSf https://astral.sh/uv/install.sh | env INSTALLER_NO_MODIFY_PATH=1 sh
 fi
 
+## mise
+MISE_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/mise"
+if [[ ! -d $MISE_DIR ]]; then
+  curl https://mise.run | sh
+fi
+
+eval "$(mise activate zsh)"
+
 ## prompt
 # Load powerlevel10k theme
 zinit ice depth"1" # git clone depth

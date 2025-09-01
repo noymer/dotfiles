@@ -5,13 +5,13 @@ curl -L https://raw.githubusercontent.com/noymer/dotfiles/master/installer.sh | 
 ## prerequisites
 * git
 * zsh
-* awk(gawk) for zplug
+* curl
 
 
 ## list
-* fzf
 * ripgrep
-* pyenv
-  * to build Python, follow [suggested build environment](https://github.com/pyenv/pyenv/wiki#suggested-build-environment) 
-* poetry
+* gh
+* jq
+* uv
+* mise
 * etc...
