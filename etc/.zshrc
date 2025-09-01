@@ -64,8 +64,8 @@ if [[ ! -f $UV_PATH ]]; then
 fi
 
 ## mise
-MISE_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/mise"
-if [[ ! -d $MISE_DIR ]]; then
+MISE_PATH=${XDG_BIN_HOME:-${HOME}/.local/bin/mise}
+if [[ ! -f $MISE_PATH ]]; then
   curl https://mise.run | sh
 fi
 
